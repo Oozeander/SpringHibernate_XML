@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping
+    xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping
+        		http://www.hibernate.org/xsd/hibernate-mapping/hibernate-mapping-4.0.xsd"
+    package="com.oozeander.model.mapping" schema="default_schema">
+    
+    <class name="Student" table="students">
+    	<meta attribute="class-description">
+    		Student Class used for testing OneToOne / ManyToOne / ManyToMany Relationship Mappings
+    	</meta>
+    	
+    	<id name="id" type="long" column="student_id">
+    		<generator class="identity"/>
+    	</id>
+    	
+    	<one-to-one name="identity" cascade="all" class="Identity"/>
+    	
+    	<bag name="skills" inverse="true" cascade="all" table="skills" fetch="join" lazy="false">
+    		<key column="student_id"/>
+    		<one-to-many class="Skill"/>
+    	</bag>
+    	
+    	<set name="teachers" cascade="all" table="student_teacher_join_table" fetch="join" lazy="false">
+    		<key column="student_id"/>
+    		<many-to-many class="Professor" column="professor_id" fetch="join" lazy="false"/>
+    	</set>
+    </class>
+    
+    <class name="Identity" table="identities">
+    	<meta attribute="class-description">
+    		Identity Class used for testing OneToOne Relationship
+    	</meta>
+    
+    	<id name="id" type="long" column="identity_id">
+    		<generator class="identity"/>
+    	</id>
+    	<property name="firstname" type="string" column="firstname" length="16"/>
+    	<property name="lastname" type="string" column="lastname" length="32"/>
+    	<property name="age" type="integer" column="age"/>
+    	
+    	<one-to-one name="student" class="Student"/>
+    </class>
+    
+    <class name="Skill" table="skills">
+    	<meta attribute="class-description">
+    		Skill Class used for testing ManyToOne Relationship
+    	</meta>
+    
+    	<id name="id" type="long" column="skill_id">
+    		<generator class="identity"/>
+    	</id>
+    	<property name="name" type="string" column="skill_name"/>
+    	<property name="mark" type="integer" column="skill_mark"/>
+    	
+    	<many-to-one name="student" class="Student" column="student_id"/>
+    </class>
+    
+    <class name="Professor" table="professors">
+    	<meta attribute="class-description">
+    		Professor Class used for testing ManyToMany Relationship
+    	</meta>
+    
+    	<id name="id" type="long" column="professor_id">
+    		<generator class="identity"/>
+    	</id>
+    	<property name="course" type="string" column="professor_course"/>
+    	
+    	<set name="students" table="student_teacher_join_table" inverse="true" fetch="join" lazy="false">
+    		<key column="professor_id"/>
+    		<many-to-many class="Student" column="student_id" fetch="join" lazy="false"/>
+    	</set>
+    </class>
+</hibernate-mapping>

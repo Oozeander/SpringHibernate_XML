@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping
+    xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping
+        		http://www.hibernate.org/xsd/hibernate-mapping/hibernate-mapping-4.0.xsd"
+    package="com.oozeander.model.embedded" schema="default_schema">
+    
+	<class name="Gamer" table="gamers">
+		<meta attribute="class-description">
+			Gamer Class for testing embeddedId / embedded components
+		</meta>
+		
+		<composite-id name="id" class="GamerId">
+			<key-property name="id" type="string" column="gamer_id"/>
+			<key-property name="username" type="string" column="gamer_username"/>
+			<key-property name="password" type="string" column="gamer_password"/>
+		</composite-id>
+		
+		<component name="information" class="GamerInformation">
+			<set name="ownedGames" fetch="join" lazy="false" table="owned_games">
+				<key>
+					<column name="gamer_id"/>
+					<column name="gamer_username"/>
+					<column name="gamer_password"/>
+				</key>
+				<element column="game" type="string"/>
+			</set>
+		</component>
+	</class>
+</hibernate-mapping>
